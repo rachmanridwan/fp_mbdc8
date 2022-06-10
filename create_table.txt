@@ -1,0 +1,126 @@
+-- Created by Vertabelo (http://vertabelo.com)
+-- Last modification date: 2022-06-07 06:59:41.801
+
+-- tables
+-- Table: Event
+CREATE TABLE Event (
+    id int  NOT NULL,
+    Region_id int  NOT NULL,
+    name varchar(300)  NOT NULL,
+    description varchar(300)  NOT NULL,
+    User_id int  NOT NULL,
+    tanggalEvent date  NOT NULL,
+    CONSTRAINT Event_pk PRIMARY KEY (id)
+);
+
+-- Table: Region
+CREATE TABLE Region (
+    id int  NOT NULL,
+    name varchar(50)  NOT NULL,
+    CONSTRAINT Region_pk PRIMARY KEY (id)
+);
+
+-- Table: Role
+CREATE TABLE Role (
+    id int  NOT NULL,
+    name varchar(50)  NOT NULL,
+    description varchar(300)  NOT NULL,
+    CONSTRAINT Role_pk PRIMARY KEY (id)
+);
+
+-- Table: Supply
+CREATE TABLE Supply (
+    id int  NOT NULL,
+    tanggalReady date  NOT NULL,
+    jenis_tanaman varchar(200)  NOT NULL,
+    jumlah_tanaman int  NOT NULL,
+    Supplier varchar(200)  NOT NULL,
+    tanamanTerkirim_id int  NOT NULL,
+    CONSTRAINT Supply_pk PRIMARY KEY (id)
+);
+
+-- Table: User
+CREATE TABLE "User" (
+    id int  NOT NULL,
+    name varchar(50)  NOT NULL,
+    birth_date date  NOT NULL,
+    CONSTRAINT User_pk PRIMARY KEY (id)
+);
+
+-- Table: UserEventRole
+CREATE TABLE UserEventRole (
+    id int  NOT NULL,
+    Role_id int  NOT NULL,
+    User_id int  NOT NULL,
+    Event_id int  NOT NULL,
+    CONSTRAINT UserEventRole_pk PRIMARY KEY (id)
+);
+
+-- Table: tanamanTerkirim
+CREATE TABLE tanamanTerkirim (
+    id int  NOT NULL,
+    tanggalKirim date  NOT NULL,
+    statusTerkirim boolean  NOT NULL,
+    Event_id int  NOT NULL,
+    CONSTRAINT tanamanTerkirim_pk PRIMARY KEY (id)
+);
+
+-- foreign keys
+-- Reference: Event_Region (table: Event)
+ALTER TABLE Event ADD CONSTRAINT Event_Region
+    FOREIGN KEY (Region_id)
+    REFERENCES Region (id)  
+    NOT DEFERRABLE 
+    INITIALLY IMMEDIATE
+;
+
+-- Reference: Event_User (table: Event)
+ALTER TABLE Event ADD CONSTRAINT Event_User
+    FOREIGN KEY (User_id)
+    REFERENCES "User" (id)  
+    NOT DEFERRABLE 
+    INITIALLY IMMEDIATE
+;
+
+-- Reference: Supply_tanamanTerkirim (table: Supply)
+ALTER TABLE Supply ADD CONSTRAINT Supply_tanamanTerkirim
+    FOREIGN KEY (tanamanTerkirim_id)
+    REFERENCES tanamanTerkirim (id)  
+    NOT DEFERRABLE 
+    INITIALLY IMMEDIATE
+;
+
+-- Reference: UserEventRole_Event (table: UserEventRole)
+ALTER TABLE UserEventRole ADD CONSTRAINT UserEventRole_Event
+    FOREIGN KEY (Event_id)
+    REFERENCES Event (id)  
+    NOT DEFERRABLE 
+    INITIALLY IMMEDIATE
+;
+
+-- Reference: UserEventRole_Role (table: UserEventRole)
+ALTER TABLE UserEventRole ADD CONSTRAINT UserEventRole_Role
+    FOREIGN KEY (Role_id)
+    REFERENCES Role (id)  
+    NOT DEFERRABLE 
+    INITIALLY IMMEDIATE
+;
+
+-- Reference: UserEventRole_User (table: UserEventRole)
+ALTER TABLE UserEventRole ADD CONSTRAINT UserEventRole_User
+    FOREIGN KEY (User_id)
+    REFERENCES "User" (id)  
+    NOT DEFERRABLE 
+    INITIALLY IMMEDIATE
+;
+
+-- Reference: tanamanTerkirim_Event (table: tanamanTerkirim)
+ALTER TABLE tanamanTerkirim ADD CONSTRAINT tanamanTerkirim_Event
+    FOREIGN KEY (Event_id)
+    REFERENCES Event (id)  
+    NOT DEFERRABLE 
+    INITIALLY IMMEDIATE
+;
+
+-- End of file.
+
