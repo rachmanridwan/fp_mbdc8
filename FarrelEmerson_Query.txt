@@ -1,0 +1,73 @@
+--Sequence--
+CREATE OR REPLACE SEQUENCE usereventrole_seq
+MINVALUE 1
+MAXVALUE 999999
+START WITH 1
+INCREMENT BY 1
+CACHE 20
+;
+
+
+--trigger--
+CREATE OR REPLACE FUNCTION USER_EVENT_ROLE_TRIGFUNC()
+  RETURNS TRIGGER 
+  AS
+$BODY$
+BEGIN
+ New.id:=nextval('usereventrole_seq');
+ RETURN NEW;
+END;
+$BODY$
+ LANGUAGE 'plpgsql' VOLATILE;
+
+CREATE OR REPLACE TRIGGER USER_EVENT_ROLE_TRIG 
+BEFORE INSERT OR UPDATE ON UserEventRole 
+FOR EACH ROW 
+EXECUTE FUNCTION USER_EVENT_ROLE_TRIGFUNC
+
+--Function--
+CREATE FUNCTION JumlahPartisipan(EventID int)
+RETURNS int
+LANGUAGE plpgsql
+AS
+$$
+DECLARE
+jumlahPartisipan integer;
+BEGIN 
+ SELECT COUNT(*)
+ INTO jumlahPartisipan
+ FROM usereventrole
+ WHERE event_id = EventID;
+ RETURN jumlahPartisipan;
+END;
+$$
+
+
+--procedure--
+CREATE OR REPLACE PROCEDURE supplyKurang(
+    ident int,
+ amount int
+)
+LANGUAGE plpgsql    
+AS $$
+BEGIN 
+    UPDATE supply 
+    SET jumlah_tanaman = jumlah_tanaman - amount 
+    WHERE ID = ident;
+    COMMIT;
+END;$$;
+
+--index--
+CREATE INDEX event_index ON usereventrole (event_id)
+
+
+
+
+RUN PROCEDURE
+SELECT * FROM supply WHERE ID = 7
+
+CALL supplyKurang(6,200)
+
+
+INSERT INTO usereventrole(role_id, user_id, event_id) VALUES (1,12,12);
+
