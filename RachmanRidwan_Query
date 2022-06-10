@@ -1,0 +1,47 @@
+-- SEQUENCE
+create sequence seq_id_event
+minvalue 1
+maxvalue 5000
+start with 1001
+
+-- FUNCTION
+create or replace function add_new_event()
+ returns trigger as $$
+begin
+ if new.id is null
+  then new.id := nextval('seq_id_event');
+ end if;
+ return new; 
+end;
+$$ language plpgsql;
+
+
+-- TRIGGER
+create trigger add_new_event
+ before insert on event
+ for each row
+ execute procedure add_new_event();
+ 
+ --PROCEDURE
+create or replace procedure check_status_tanamanTerkirim(
+ idTanaman INT
+)
+as $$
+declare status_Terkirim boolean;
+begin
+ select tanamanTerkirim.statusTerkirim into status_Terkirim
+ from tanamanTerkirim
+ where tanamanTerkirim.id = idTanaman;
+ 
+ raise notice 'Status Terkirim dengan id % = %', idTanaman, status_Terkirim;
+end;
+$$
+language plpgsql
+ 
+ --indexing
+CREATE INDEX index_supplier
+ON supply(supplier);
+
+--transaction
+insert into EVENT (region_id, name, description, user_id, tanggalEvent) values (21, 'Lunnar Year', 'Lunnay New Year 2018, right wrist, chn opn fx', 2512, '20/02/2018')
+
